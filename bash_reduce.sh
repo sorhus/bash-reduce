@@ -9,7 +9,7 @@
 usage="\n
 \tusage: ./bash_reduce.sh mode map-source reduce-source input [map, reduce args] [parallel args] \n\n
 \t\tmode: --sequential -s, --local -l or --cluster -c. local and cluster requires GNU parallel. cluster also requires cluster.config file.\n
-\t\tsource: file containing map and reduce functions in awk.\n
+\t\tsource: files containing map and reduce functions in awk.\n
 \t\tinput: data.\n
 \t\tmap, reduce args: optional awk args for mapper and reducer.\n
 \t\tparallel args: optional args for GNU parallel.\n
