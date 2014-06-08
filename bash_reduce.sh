@@ -61,7 +61,7 @@ then
   exit
 fi
 
-alias local='./parallel --gnu --no-notice --progress --pipe $5'
+alias local='parallel --gnu --progress --pipe $5'
 if [[ $MODE == l ]]
 then
   alias mode='local'

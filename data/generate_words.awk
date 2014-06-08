@@ -1,6 +1,7 @@
 BEGIN { 
   i = 0; 
   while(getline word < "/usr/share/dict/words") { 
+    gsub("[^A-Za-z]", "", word)
     words[i] = tolower(word); i++ 
   } 
 } { 
@@ -8,7 +9,7 @@ BEGIN {
     for(k = 0; k < $2; k++) { 
       printf("%s ", words[int(1 + rand() * 10000000) % i]) > $3 
     } 
-    printf("\n") > $3; print(".") 
+    printf("\n") > $3
   } 
   exit 
 }
