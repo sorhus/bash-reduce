@@ -2,7 +2,8 @@ BEGIN {
   i = 0; 
   while(getline word < "/usr/share/dict/words") { 
     gsub("[^A-Za-z]", "", word)
-    words[i] = tolower(word); i++ 
+    words[i] = tolower(word)
+    i++ 
   } 
 } { 
   for(j = 0; j < $1; j++) { 
