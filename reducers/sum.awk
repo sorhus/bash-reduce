@@ -1,7 +1,9 @@
 {
   sum = 0
-  for(i = 2; i <= NF; i++) {
-    sum += $i
+  if(NF > 0) {
+    for(i = 2; i <= NF; i++) {
+      sum += $i
+    }
+    print $1, sum
   }
-  print $1, sum
 }

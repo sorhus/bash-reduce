@@ -1,0 +1,40 @@
+#!/bin/bash
+
+echo "Running all tests"
+echo
+
+BASE=`pwd`
+TESTS=`ls -d */`
+PASSED=0
+FAILED=0
+cd ..
+
+GREEN="\e[0;32m"
+RED="\e[0;31m"
+END="\e[0m"
+
+for TEST in $TESTS; do
+    echo -n "  running test ${TEST%/} "
+    DIR=$BASE/$TEST
+    SETUP=$(cat $DIR/setup)
+    ./bash-reduce -s $SETUP $DIR/input > $DIR/result
+    diff $DIR/result $DIR/expected > /dev/null
+    if [[ $? -eq 0 ]]; then
+        echo -e "${GREEN}passed${END}!"
+        PASSED=$((PASSED+1))
+    else
+        echo -e "${RED}failed${END}:"
+        echo
+        echo "`diff $DIR/result $DIR/expected`"
+        echo
+        FAILED=$((FAILED+1))
+    fi
+    rm $DIR/result
+done
+
+echo
+if [[ $FAILED -eq 0 ]]; then
+    echo -e "All tests ${GREEN}PASSED${END}!"
+else
+    echo -e "$FAILED test(s) ${RED}FAILED${END}!"
+fi
