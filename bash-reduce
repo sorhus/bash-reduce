@@ -1,29 +1,31 @@
 #
-# Map Reduce framework in bash / awk / GNU Parallel
+# MapReduce framework in bash / awk / parallel
 #
-# Implement your own map and reduce functions
+# Implement your own map and reduce functions in awk
 # The framework will take care of the rest
 #
 # @author anton.sorhus@gmail.com
 
-USAGE="Usage: bash-reduce [-m mode] mapper reducer input "
+USAGE="Usage: bash-reduce [-m mode] [-v var=val] [-p params] mapper reducer input"
 function usage() {
     printf "%s\n" "$USAGE" "Try 'bash-reduce -h' for more information."
     exit 1
 }
 
 function help() {
-  printf "%s\n  * %s\n  * %s\n  * %s\n  * %s%s\n" \
+  printf "%s\n  * %s\n  * %s\n  * %s\n  * %s\n  * %s\n  * %s%s\n" \
     "$USAGE" \
-    "mode: (s)equential, (l)ocal or (c)luster. local and cluster requires GNU parallel. cluster also requires cluster.config file. Defaults to sequential" \
+    "[-m mode]: (s)equential, (l)ocal or (c)luster. local and cluster requires GNU parallel. cluster also requires cluster.config file. Defaults to sequential" \
+    "[-v var=val]: variables passed on to the awk scripts." \
+    "[-p params]: parameters passed on to parallel." \
     "mapper: file containing map function in awk." \
-    "redcer: file containing reduce function in awk." \
-    "input: file containing data for the job." \
+    "reducer: file containing reduce function in awk." \
+    "input: file containing input data for the job." \
     ""
     exit 0
 }
 
-while getopts hm: OPTION; do
+while getopts hm:v:p: OPTION; do
     case "$OPTION" in
         h)  help
             ;;
@@ -32,10 +34,16 @@ while getopts hm: OPTION; do
             elif [[ $OPTARG == "l" || $OPTARG == "local" ]]; then
                 . core/parallel
             elif [[ $OPTARG == "c" || $OPTARG == "cluster" ]]; then
+                parallel_flags="--sshloginfile cluster.config --controlmaster --sshdelay 0.01 --progress"
                 . core/parallel
             else
                 usage
             fi
+            ;;
+        v)  awk_variables="$awk_variables -v $OPTARG"
+            ;;
+        p)
+            parallel_flags="$parallel_flags $OPTARG"
             ;;
         ?)  usage
             ;;
@@ -59,6 +67,7 @@ fi
 map=$(<$1)
 shuffle=$(<"core/shuffle.awk")
 reduce=$(<$2)
+input=$3
 
-execute $3 $4
+execute "$input" "$awk_variables" "$parallel_flags"
 
