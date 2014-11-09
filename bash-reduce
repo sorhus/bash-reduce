@@ -6,54 +6,59 @@
 #
 # @author anton.sorhus@gmail.com
 
-usage="\n
-\tusage: ./bash_reduce.sh mode map-source reduce-source input [map, reduce args] [parallel args] \n\n
-\t\tmode: --sequential -s, --local -l or --cluster -c. local and cluster requires GNU parallel. cluster also requires cluster.config file.\n
-\t\tsource: files containing map and reduce functions in awk.\n
-\t\tinput: data.\n
-\t\tmap, reduce args: optional awk args for mapper and reducer.\n
-\t\tparallel args: optional args for GNU parallel.\n
-"
+USAGE="Usage: bash-reduce [-m mode] mapper reducer input "
+function usage() {
+    printf "%s\n" "$USAGE" "Try 'bash-reduce -h' for more information."
+    exit 1
+}
 
-if [[ $# -gt 2 ]]; then
-    if [[ $1 == --sequential || $1 == -s ]]; then
-        MODE=s
-    elif [[ $1 == --local || $1 == -l ]]; then
-        MODE=l
-    elif [[ $1 == --cluster || $1 == -c ]]; then
-        MODE=c
-    else
-        echo -e $usage
-        exit
-    fi
-else
-  echo -e $usage
-  exit
+function help() {
+  printf "%s\n  * %s\n  * %s\n  * %s\n  * %s%s\n" \
+    "$USAGE" \
+    "mode: (s)equential, (l)ocal or (c)luster. local and cluster requires GNU parallel. cluster also requires cluster.config file. Defaults to sequential" \
+    "mapper: file containing map function in awk." \
+    "redcer: file containing reduce function in awk." \
+    "input: file containing data for the job." \
+    ""
+    exit 0
+}
+
+while getopts hm: OPTION; do
+    case "$OPTION" in
+        h)  help
+            ;;
+        m)  if [[ $OPTARG == "s" || $OPTARG == "sequential" ]]; then
+                . core/sequential
+            elif [[ $OPTARG == "l" || $OPTARG == "local" ]]; then
+                . core/parallel
+            elif [[ $OPTARG == "c" || $OPTARG == "cluster" ]]; then
+                . core/parallel
+            else
+                usage
+            fi
+            ;;
+        ?)  usage
+            ;;
+   esac
+done
+shift $(($OPTIND - 1))
+
+if [[ $# -ne 3 ]]; then
+    usage
 fi
 
-map=$(<$2)
+# Default to sequential
+{
+    type -t execute
+    rc=$?
+} &> /dev/null
+if [[ $rc -ne 0 ]]; then
+    . core/sequential
+fi
+
+map=$(<$1)
 shuffle=$(<"shuffle.awk")
-reduce=$(<$3)
+reduce=$(<$2)
 
-if [[ $MODE == s ]]; then
-    awk $5 "$map" < $4 | \
-    sort -S 1G | \
-    awk "$shuffle" | \
-    awk $5 "$reduce" | \
-    sort -S 1G -k2nr -k1
-    exit
-fi
+execute $3 $4
 
-alias local='parallel --gnu --pipe $6'
-if [[ $MODE == l ]]; then
-    alias mode='local'
-elif [[ $MODE == c ]]; then
-    alias mode='local --sshloginfile cluster.config --controlmaster --sshdelay 0.01 --progress'
-fi
-shopt -s expand_aliases
-
-mode "awk $5 '$map' | sort -S 1G | awk '$shuffle'" < $4 | \
-sort -S 1G | \
-awk "$shuffle" | \
-mode "awk $5 '$reduce'" | \
-sort -S 1G -k2nr -k1

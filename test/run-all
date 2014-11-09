@@ -14,10 +14,10 @@ RED="\e[0;31m"
 END="\e[0m"
 
 for TEST in $TESTS; do
-    echo -n "  running test ${TEST%/} "
+    echo -n " * running test ${TEST%/} "
     DIR=$BASE/$TEST
     SETUP=$(cat $DIR/setup)
-    ./bash-reduce -s $SETUP $DIR/input > $DIR/result
+    ./bash-reduce $SETUP $DIR/input > $DIR/result
     diff $DIR/result $DIR/expected > /dev/null
     if [[ $? -eq 0 ]]; then
         echo -e "${GREEN}passed${END}!"

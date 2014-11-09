@@ -1,0 +1,14 @@
+#alias local='parallel --gnu --pipe $6'
+#if [[ $MODE == l ]]; then
+#    alias mode='local'
+#elif [[ $MODE == c ]]; then
+#    alias mode='local --sshloginfile cluster.config --controlmaster --sshdelay 0.01 --progress'
+#fi
+#shopt -s expand_aliases
+function execute() {
+    parallel --gnu --pipe $3 $4 "awk $2 '$map' | sort -S 1G | awk '$shuffle'" < $1 | \
+    sort -S 1G | \
+    awk "$shuffle" | \
+    parallel --gnu --pipe $3 $4 "awk $2 '$reduce'" | \
+    sort -S 1G -k2nr -k1
+}

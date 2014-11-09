@@ -1,0 +1,7 @@
+function execute() {
+    awk $2 "$map" < $1 | \
+    sort -S 1G | \
+    awk "$shuffle" | \
+    awk $2 "$reduce" | \
+    sort -S 1G -k2nr -k1
+}

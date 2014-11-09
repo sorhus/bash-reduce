@@ -5,7 +5,7 @@ A MapReduce framework written in awk, bash and GNU Parallel.
 
 Count words
 ```
-$ ./bash-reduce -s mappers/words.awk reducers/sum.awk data/shakespeare | head
+$ ./bash-reduce mappers/words.awk reducers/sum.awk data/shakespeare | head
 the 27825
 and 26791
 i 20681
@@ -20,7 +20,7 @@ in 11027
 
 Get unique words
 ```
-./bash-reduce -s mappers/words.awk reducers/unique.awk data/shakespeare | head
+./bash-reduce mappers/words.awk reducers/unique.awk data/shakespeare | head
 1
 a
 aaron
@@ -35,7 +35,7 @@ abashd
 
 Grep for "hamlet"
 ```
-$ ./bash-reduce -s mappers/grep.awk reducers/grep.awk data/shakespeare "-v word=hamlet" | head
+$ ./bash-reduce mappers/grep.awk reducers/grep.awk data/shakespeare "-v word=hamlet" | head
  and bring these gentlemen where HAMLET is
  and what so poor a man as HAMLET is
  as to give words or talk with the lord HAMLET
