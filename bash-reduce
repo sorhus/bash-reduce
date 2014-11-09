@@ -57,7 +57,7 @@ if [[ $rc -ne 0 ]]; then
 fi
 
 map=$(<$1)
-shuffle=$(<"shuffle.awk")
+shuffle=$(<"core/shuffle.awk")
 reduce=$(<$2)
 
 execute $3 $4

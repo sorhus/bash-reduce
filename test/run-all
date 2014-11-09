@@ -1,40 +1,41 @@
 #!/bin/bash
 
-echo "Running all tests"
-echo
+# Clean up old diffs
+{
+    ls -1 *.diff | xargs rm 
+} &> /dev/null
 
-BASE=`pwd`
-TESTS=`ls -d */`
-PASSED=0
-FAILED=0
-cd ..
+printf "%s\n\n" "Running all tests"
 
 GREEN="\e[0;32m"
 RED="\e[0;31m"
 END="\e[0m"
 
+BASE=$(pwd)
+TESTS=$(ls -d */)
+PASSED=0
+FAILED=0
+cd ..
+
 for TEST in $TESTS; do
-    echo -n " * running test ${TEST%/} "
+    printf "  * running test ${TEST%/}: "
     DIR=$BASE/$TEST
     SETUP=$(cat $DIR/setup)
     ./bash-reduce $SETUP $DIR/input > $DIR/result
     diff $DIR/result $DIR/expected > /dev/null
     if [[ $? -eq 0 ]]; then
-        echo -e "${GREEN}passed${END}!"
+        printf "${GREEN}passed${END}!\n"
         PASSED=$((PASSED+1))
     else
-        echo -e "${RED}failed${END}:"
-        echo
-        echo "`diff $DIR/result $DIR/expected`"
-        echo
+        diff $DIR/result $DIR/expected > "$BASE/${TEST%/}.diff"
+        printf "${RED}failed${END}\n"
         FAILED=$((FAILED+1))
     fi
     rm $DIR/result
 done
 
-echo
 if [[ $FAILED -eq 0 ]]; then
-    echo -e "All tests ${GREEN}PASSED${END}!"
+    printf "\nAll tests ${GREEN}PASSED${END}!\n"
 else
-    echo -e "$FAILED test(s) ${RED}FAILED${END}!"
+    printf "\n$FAILED test(s) ${RED}FAILED${END}! read diff file for more info.\n"
 fi
