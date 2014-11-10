@@ -1,0 +1,1 @@
+-v word=foo mappers/grep.awk reducers/grep.awk
