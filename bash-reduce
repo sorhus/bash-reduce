@@ -10,7 +10,7 @@
 USAGE="Usage: bash-reduce [-m mode] [-v var=val] [-p params] mapper reducer input"
 
 function usage() {
-    printf "%s\n" "$USAGE" "Try 'bash-reduce -h' for more information."
+    printf "%s\n%s\n" "$USAGE" "Try 'bash-reduce -h' for more information."
     exit 1
 }
 
@@ -49,8 +49,7 @@ while getopts hm:v:p: OPTION; do
             ;;
         v)  awk_variables="$awk_variables -v $OPTARG"
             ;;
-        p)
-            parallel_flags="$parallel_flags $OPTARG"
+        p)  parallel_flags="$parallel_flags $OPTARG"
             ;;
         ?)  usage
             ;;
