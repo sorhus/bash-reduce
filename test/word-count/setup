@@ -1,1 +1,1 @@
-mappers/word-count.awk reducers/sum.awk
+mappers/word-count.awk core/identity.awk

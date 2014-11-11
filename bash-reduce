@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # MapReduce framework in bash / awk / parallel
 #
@@ -7,6 +8,7 @@
 # @author anton.sorhus@gmail.com
 
 USAGE="Usage: bash-reduce [-m mode] [-v var=val] [-p params] mapper reducer input"
+
 function usage() {
     printf "%s\n" "$USAGE" "Try 'bash-reduce -h' for more information."
     exit 1
@@ -23,6 +25,11 @@ function help() {
     "input: file containing input data for the job." \
     ""
     exit 0
+}
+
+function die() {
+  echo $1
+  exit 2
 }
 
 while getopts hm:v:p: OPTION; do
@@ -51,18 +58,16 @@ while getopts hm:v:p: OPTION; do
 done
 shift $(($OPTIND - 1))
 
+# Default to sequential
+type -t execute &> /dev/null || . core/sequential
+
+# Check required args
 if [[ $# -ne 3 ]]; then
     usage
 fi
-
-# Default to sequential
-{
-    type -t execute
-    rc=$?
-} &> /dev/null
-if [[ $rc -ne 0 ]]; then
-    . core/sequential
-fi
+for p in $1 $2 $3; do
+    stat $p &> /dev/null || die "Can't read $p"
+done
 
 map=$(<$1)
 shuffle=$(<"core/shuffle.awk")
@@ -70,4 +75,3 @@ reduce=$(<$2)
 input=$3
 
 execute "$input" "$awk_variables" "$parallel_flags"
-

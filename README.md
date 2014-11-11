@@ -2,6 +2,8 @@ bash-reduce
 ===========
 
 A MapReduce framework written in awk, bash and GNU Parallel.
+Implement map and reduce functions in pure awk and run them
+using the framework. There is also support for unit tests.
 
 Count words
 ```
@@ -20,22 +22,22 @@ in 11027
 
 Get unique words
 ```
-./bash-reduce mappers/words.awk reducers/unique.awk data/shakespeare | head
-1
-a
-aaron
-aarons
-abaissiez
-abandon
-abandond
-abandoned
-abase
-abashd
+./bash-reduce mappers/word-count.awk reducers/key.awk data/shakespeare | tail
+zenith
+zephyrs
+zipped
+zir
+zo
+zodiac
+zodiacs
+zone
+zounds
+zwaggerd
 ```
 
 Grep for "hamlet"
 ```
-$ ./bash-reduce mappers/grep.awk reducers/grep.awk data/shakespeare "-v word=hamlet" | head
+$ ./bash-reduce -v word=hamlet mappers/grep.awk reducers/grep.awk data/shakespeare | head
  and bring these gentlemen where HAMLET is
  and what so poor a man as HAMLET is
  as to give words or talk with the lord HAMLET

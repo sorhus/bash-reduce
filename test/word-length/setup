@@ -1,1 +1,1 @@
-mappers/word-length.awk reducers/unique-values.awk
+mappers/word-length.awk core/identity.awk

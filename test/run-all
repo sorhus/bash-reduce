@@ -20,8 +20,8 @@ cd ..
 for TEST in $TESTS; do
     printf "  * running test ${TEST%/}: "
     DIR=$BASE/$TEST
-    SETUP=$(cat $DIR/setup)
-    ./bash-reduce $SETUP $DIR/input > $DIR/result
+    SETUP=$(<$DIR/setup)
+    ./bash-reduce $SETUP $DIR/input > $DIR/result 2> /dev/null
     diff $DIR/result $DIR/expected > /dev/null
     if [[ $? -eq 0 ]]; then
         printf "${GREEN}passed${END}!\n"

@@ -1,5 +1,3 @@
-{
-  if(NF > 0) {
-    print $1, NF - 1
-  }
+NF > 0 {
+  print $1, NF - 1
 }
