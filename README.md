@@ -1,11 +1,9 @@
 ## bash-reduce
-==========
 
 A MapReduce framework written in awk, bash and GNU Parallel.
 Implement map and reduce functions in pure awk and run them
 using the framework. Tested with bash 4 and gawk 4.0.
 
-==========
 ### Run tests
 ```
 ~/src/bash-reduce/test$ ./run-all 
@@ -24,9 +22,8 @@ Running all tests
 
 All tests PASSED!
 ```
-==========
-### Example use
 
+### Example use
 ##### Count words
 ```
 $ ./bash-reduce mappers/words.awk reducers/sum.awk data/shakespeare | head
