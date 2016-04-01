@@ -4,6 +4,8 @@ A MapReduce framework written in awk, bash and GNU Parallel.
 Implement map and reduce functions in pure awk and run them
 using the framework. Tested with bash 4 and gawk 4.0.
 
+You can find a short writeup [here](http://sorhus.github.io/2016/03/27/bash-reduce-part-1/).
+
 ### Run tests
 ```
 ~/src/bash-reduce/test$ ./run-all 
