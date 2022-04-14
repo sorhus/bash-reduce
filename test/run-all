@@ -1,5 +1,32 @@
 #!/bin/bash
 
+function usage() {
+  printf "%s\n%s\n" \
+      "Usage: run-all [-m mode]" \
+      "Only (s)equential and (l)ocal available. Defaults to sequential."
+  exit 1
+}
+
+mode="s"
+
+while getopts hm: OPTION; do
+    case "$OPTION" in
+        h)  usage
+            ;;
+        m)  if [[ $OPTARG == "s" || $OPTARG == "sequential" ]]; then
+                mode="s"
+            elif [[ $OPTARG == "l" || $OPTARG == "local" ]]; then
+                mode="l"
+            else
+                usage
+            fi
+            ;;
+        ?)  usage
+            ;;
+   esac
+done
+shift $(($OPTIND - 1))
+
 # Clean up old diffs
 stat *.diff &> /dev/null && ls -1 *.diff | xargs rm
 
@@ -18,7 +45,7 @@ for TEST in $TESTS; do
     DIR=$BASE/$TEST
     SETUP=$(<$DIR/setup)
     printf "  * running test ${TEST%/}: "
-    ./bash-reduce $SETUP $DIR/input > $DIR/result 2> /dev/null
+    ./bash-reduce -m $mode $SETUP $DIR/input > $DIR/result 2> /dev/null
     diff $DIR/result $DIR/expected > /dev/null
     if [[ $? -eq 0 ]]; then
         printf "${GREEN}passed${END}!\n"

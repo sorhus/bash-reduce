@@ -15,10 +15,10 @@ function usage() {
 }
 
 function help() {
-  printf "%s\n  * %s\n  * %s\n  * %s\n  * %s\n  * %s\n  * %s%s\n" \
+  printf "%s\n  * %s\n  * %s\n  * %s\n  * %s\n  * %s\n  * %s\n  * %s%s\n" \
     "$USAGE" \
     "[-s]: apply secondary sort, i.e. sort the values for each key lexicographically prior to reduce phase." \
-    "[-m mode]: (s)equential, (l)ocal or (c)luster. local and cluster requires GNU parallel. cluster also requires cluster.config file. Defaults to sequential" \
+    "[-m mode]: (s)equential, (l)ocal or (c)luster. local and cluster requires GNU parallel. cluster also requires cluster.config file. Defaults to sequential." \
     "[-v var=val]: variables passed on to the awk scripts." \
     "[-p params]: parameters passed on to parallel." \
     "mapper: file containing map function in awk." \
@@ -36,13 +36,7 @@ function die() {
 # default to random secondary sort to simulate distributed setup
 secondary_sort=$(<"core/random_secondary_sort.awk")
 
-case $1 in
-    -s)  secondary_sort=$(<"core/secondary_sort.awk")
-         shift
-         ;;
-esac
-
-while getopts hm:v:p: OPTION; do
+while getopts hm:v:p:s OPTION; do
     case "$OPTION" in
         h)  help
             ;;
@@ -60,6 +54,8 @@ while getopts hm:v:p: OPTION; do
         v)  awk_variables="$awk_variables -v $OPTARG"
             ;;
         p)  parallel_flags="$parallel_flags $OPTARG"
+            ;;
+        s)  secondary_sort=$(<"core/secondary_sort.awk")
             ;;
         ?)  usage
             ;;

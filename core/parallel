@@ -2,6 +2,7 @@ function execute() {
     parallel --gnu --pipe $3 "awk $2 '$map' | sort -S 1G | awk '$shuffle'" < $1 | \
     sort -S 1G | \
     awk "$shuffle" | \
+    awk "$secondary_sort" | \
     parallel --gnu --pipe $3 "awk $2 '$reduce'" | \
     sort -S 1G -k2nr -k1
 }
