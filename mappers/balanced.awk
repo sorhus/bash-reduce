@@ -8,5 +8,5 @@
       count--
     }
   }
-  printf("0 %s_%s\n", NR, count)
+  printf("KEY %s_%s\n", NR, count)
 }
