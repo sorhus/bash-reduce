@@ -11,9 +11,10 @@ You can find a short writeup [here](http://sorhus.github.io/2016/03/27/bash-redu
 ~/src/bash-reduce/test$ ./run-all 
 Running all tests
 
+  * running test balanced-1: passed!
+  * running test balanced-2: passed!
+  * running test balanced-3: passed!
   * running test co-occurence: passed!
-  * running test grep: passed!
-  * running test identity: passed!
   * running test intersect: passed!
   * running test permutations: passed!
   * running test set: passed!
@@ -28,7 +29,7 @@ All tests PASSED!
 ### Example use
 ##### Count words
 ```
-$ ./bash-reduce mappers/words.awk reducers/sum.awk data/shakespeare | head
+$ ./bash-reduce mappers/word-count.awk reducers/sum.awk data/shakespeare | head
 the 27825
 and 26791
 i 20681
@@ -56,9 +57,9 @@ zounds
 zwaggerd
 ```
 
-##### Grep for "hamlet"
+##### Grep for "hamlet" (only mapper needed)
 ```
-$ ./bash-reduce -v word=hamlet mappers/grep.awk reducers/grep.awk data/shakespeare | head
+$ awk -f mappers/grep.awk -v word=hamlet < data/shakespeare | head
  and bring these gentlemen where HAMLET is
  and what so poor a man as HAMLET is
  as to give words or talk with the lord HAMLET
@@ -69,4 +70,4 @@ $ ./bash-reduce -v word=hamlet mappers/grep.awk reducers/grep.awk data/shakespea
  did HAMLET so envenom with his envy
  enter ghost and HAMLET
  enter HAMLET
-```
+ ```
