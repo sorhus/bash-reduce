@@ -1,0 +1,1 @@
+-s mappers/balanced.awk reducers/balanced.awk

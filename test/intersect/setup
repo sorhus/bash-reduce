@@ -1,1 +1,1 @@
-mappers/word-count.awk reducers/intersect.awk
+-v lines=3 mappers/word-count.awk reducers/intersect.awk

@@ -7,7 +7,7 @@
 #
 # @author anton.sorhus@gmail.com
 
-USAGE="Usage: bash-reduce [-m mode] [-v var=val] [-p params] mapper reducer input"
+USAGE="Usage: bash-reduce [-s] [-m mode] [-v var=val] [-p params] mapper reducer input"
 
 function usage() {
     printf "%s\n%s\n" "$USAGE" "Try 'bash-reduce -h' for more information."
@@ -17,6 +17,7 @@ function usage() {
 function help() {
   printf "%s\n  * %s\n  * %s\n  * %s\n  * %s\n  * %s\n  * %s%s\n" \
     "$USAGE" \
+    "[-s]: apply secondary sort, i.e. sort the values for each key lexicographically prior to reduce phase." \
     "[-m mode]: (s)equential, (l)ocal or (c)luster. local and cluster requires GNU parallel. cluster also requires cluster.config file. Defaults to sequential" \
     "[-v var=val]: variables passed on to the awk scripts." \
     "[-p params]: parameters passed on to parallel." \
@@ -31,6 +32,15 @@ function die() {
   echo $1
   exit 2
 }
+
+# default to random secondary sort to simulate distributed setup
+secondary_sort=$(<"core/random_secondary_sort.awk")
+
+case $1 in
+    -s)  secondary_sort=$(<"core/secondary_sort.awk")
+         shift
+         ;;
+esac
 
 while getopts hm:v:p: OPTION; do
     case "$OPTION" in

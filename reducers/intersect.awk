@@ -1,3 +1,3 @@
-NF == 3 {
+NF == lines + 1 {
   print $1
 }
