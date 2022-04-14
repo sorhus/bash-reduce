@@ -4,7 +4,6 @@ BEGIN {
 }
 {
   delete line
-  key = $1
   for(i = 2; i <= NF; i++) {
     line[sprintf("%.20f", rand())] = $i
   }
@@ -13,6 +12,5 @@ BEGIN {
     $j = line[i]
     j++
   }
-  $1 = key
   print
 }
